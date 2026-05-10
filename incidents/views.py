@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework.generics import ListAPIView
-from incidents.models import Incidents
+from incidents.models import Incident
 from incidents.serializers import IncidentSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response

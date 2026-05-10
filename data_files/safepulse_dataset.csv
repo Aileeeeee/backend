@@ -1,0 +1,122 @@
+﻿Incident_ID,Incident_Date,Incident_Time,Location,Incident_Type,Victim_Age,Victim_Gender,Perpetrator_Relationship,Reporting_Channel,Severity_Level,Support_Provided,Follow_Up_Status,Notes
+1001,2026-01-19,18:47:00.0000000,Abuja,Harassment,36,Female,Stranger,Dashboard,Medium,Legal Aid,Ongoing,Situation under control
+1002,2025-05-03,09:58:00.0000000,Port Harcourt,Child Abuse,6,Male,Relative,Mobile App,High,Shelter,Ongoing,Case under child protection services
+1003,2026-04-15,12:55:00.0000000,Kano,Sexual Assault,26,Female,Relative,Hotline,High,Shelter,Ongoing,Suspect identified and questioned
+1004,2025-06-27,19:43:00.0000000,Port Harcourt,Sexual Assault,39,Female,Relative,Community Center,Critical,Medical Care,Ongoing,Suspect identified and questioned
+1005,2025-07-06,22:43:00.0000000,Enugu,Domestic Violence,31,Female,Relative,Community Center,High,Shelter,Ongoing,Victim considering separation
+1006,2025-04-30,10:17:00.0000000,Abuja,Domestic Violence,30,Female,Partner,Dashboard,High,Counseling,Closed,Victim contacted by support team
+1007,2025-11-29,16:58:00.0000000,Port Harcourt,Domestic Violence,35,Female,Neighbor,Mobile App,Medium,Legal Aid,Ongoing,Case transferred to social services
+1008,2025-05-26,23:06:00.0000000,Uyo,Child Abuse,15,Male,Neighbor,Dashboard,Critical,Counseling,Ongoing,Child placed in protective custody
+1009,2025-10-20,07:02:00.0000000,Enugu,Domestic Violence,39,Female,Partner,Hotline,Medium,Counseling,Ongoing,Case assigned to field officer
+1010,2026-01-15,19:39:00.0000000,Kafanchan,Domestic Violence,26,Female,Partner,Mobile App,High,Shelter,Ongoing,Victim receiving ongoing therapy
+1011,2025-06-17,20:31:00.0000000,Enugu,Harassment,37,Female,Employer,Community Center,High,Legal Aid,Closed,Situation under control
+1012,2025-11-25,12:38:00.0000000,Kafanchan,Harassment,23,Female,Colleague,Dashboard,Medium,Legal Aid,Closed,Follow-up visit scheduled
+1013,2025-05-28,16:54:00.0000000,Kano,Domestic Violence,44,Female,Spouse,Community Center,High,Counseling,Ongoing,Case assigned to field officer
+1014,2025-10-21,13:06:00.0000000,Ibadan,Harassment,24,Female,Teacher,Community Center,Medium,Legal Aid,Closed,Case under review
+1015,2026-01-02,10:50:00.0000000,Kafanchan,Domestic Violence,30,Male,Neighbor,Community Center,High,Shelter,Ongoing,Victim receiving ongoing therapy
+1016,2025-07-13,21:45:00.0000000,Lagos,Domestic Violence,41,Female,Partner,Dashboard,Critical,Legal Aid,Ongoing,Victim moved to secure location
+1017,2025-07-16,16:53:00.0000000,Enugu,Sexual Assault,27,Male,Neighbor,Hotline,High,Medical Care,Ongoing,Legal action in progress
+1018,2026-03-04,09:29:00.0000000,Ibadan,Child Abuse,6,Female,Teacher,Mobile App,High,Counseling,Ongoing,Case forwarded to social services
+1019,2025-06-07,11:23:00.0000000,Abuja,Harassment,28,Female,Colleague,Hotline,High,Counseling,Closed,Response team engaged
+1020,2025-07-30,05:53:00.0000000,Enugu,Child Abuse,5,Male,Relative,Hotline,Critical,Counseling,Ongoing,Case under child protection services
+1021,2026-01-03,16:56:00.0000000,Enugu,Domestic Violence,27,Female,Neighbor,Community Center,Medium,Legal Aid,Closed,Support plan developed
+1022,2025-10-27,05:23:00.0000000,Ibadan,Sexual Assault,24,Female,Stranger,Dashboard,Critical,Shelter,Closed,Investigation ongoing
+1023,2025-08-13,03:05:00.0000000,Lagos,Domestic Violence,24,Female,Relative,Hotline,Medium,Legal Aid,Ongoing,Victim contacted by support team
+1024,2025-06-01,20:45:00.0000000,Kafanchan,Domestic Violence,18,Female,Partner,Hotline,High,Counseling,Ongoing,Victim receiving ongoing therapy
+1025,2025-07-24,14:50:00.0000000,Enugu,Child Abuse,14,Male,Relative,Mobile App,High,Shelter,Closed,Support services assigned
+1026,2025-09-08,16:23:00.0000000,Ibadan,Child Abuse,7,Female,Guardian,Dashboard,Critical,Medical Care,Closed,Victim under observation
+1027,2025-08-24,22:25:00.0000000,Kano,Harassment,35,Female,Neighbor,Dashboard,High,Legal Aid,Closed,Community leaders notified
+1028,2026-01-06,06:20:00.0000000,Kano,Sexual Assault,38,Male,Colleague,Mobile App,High,Shelter,Ongoing,Police investigation in progress
+1029,2025-05-30,05:41:00.0000000,Kafanchan,Domestic Violence,25,Female,Partner,Hotline,Medium,Legal Aid,Closed,Victim receiving ongoing therapy
+1030,2026-04-03,15:59:00.0000000,Port Harcourt,Domestic Violence,36,Female,Spouse,Mobile App,Medium,Counseling,Ongoing,Counseling sessions ongoing
+1031,2026-03-06,05:03:00.0000000,Lagos,Sexual Assault,15,Female,Stranger,Mobile App,Critical,Legal Aid,Closed,Victim receiving medical attention
+1032,2026-01-22,20:37:00.0000000,Kafanchan,Sexual Assault,26,Female,Relative,Community Center,High,Medical Care,Ongoing,Emergency services involved
+1033,2025-05-18,02:45:00.0000000,Lagos,Domestic Violence,31,Female,Spouse,Dashboard,Critical,Shelter,Ongoing,Case assigned to field officer
+1034,2025-10-26,13:04:00.0000000,Enugu,Harassment,30,Male,Employer,Hotline,Low,Legal Aid,Closed,Situation under control
+1035,2026-03-31,05:46:00.0000000,Port Harcourt,Child Abuse,10,Male,Relative,Mobile App,Critical,Shelter,Ongoing,Victim reunited with family
+1036,2025-10-04,07:48:00.0000000,Port Harcourt,Domestic Violence,32,Female,Relative,Dashboard,High,Shelter,Ongoing,Case transferred to social services
+1037,2025-12-17,06:25:00.0000000,Enugu,Harassment,45,Female,Teacher,Hotline,Low,Legal Aid,Closed,Legal consultation provided
+1038,2026-03-13,12:57:00.0000000,Kaduna,Harassment,42,Female,Employer,Hotline,Medium,Legal Aid,Closed,Case under review
+1039,2025-12-15,05:00:00.0000000,Kaduna,Child Abuse,12,Female,Guardian,Community Center,High,Shelter,Ongoing,Child placed in protective custody
+1040,2025-08-21,15:35:00.0000000,Lagos,Harassment,28,Female,Colleague,Community Center,Medium,Counseling,Closed,Situation under control
+1041,2025-09-27,11:17:00.0000000,Kaduna,Child Abuse,17,Female,Guardian,Community Center,Critical,Shelter,Ongoing,Child removed from home
+1042,2025-08-30,11:29:00.0000000,Kaduna,Harassment,17,Female,Teacher,Dashboard,Low,Counseling,Ongoing,Workplace mediation scheduled
+1043,2026-04-10,08:49:00.0000000,Zaria,Child Abuse,14,Female,Teacher,Hotline,High,Counseling,Ongoing,Victim under observation
+1044,2025-06-21,04:29:00.0000000,Port Harcourt,Harassment,21,Female,Employer,Mobile App,Medium,Counseling,Ongoing,Report archived
+1045,2026-03-20,21:50:00.0000000,Uyo,Harassment,34,Female,Teacher,Hotline,Low,Legal Aid,Closed,Victim advised on next steps
+1046,2025-07-02,17:06:00.0000000,Uyo,Harassment,34,Female,Stranger,Dashboard,Medium,Legal Aid,Closed,Situation under control
+1047,2026-04-12,01:23:00.0000000,Kano,Sexual Assault,33,Female,Teacher,Community Center,Critical,Shelter,Closed,Medical examination completed
+1048,2025-11-27,01:28:00.0000000,Kano,Harassment,30,Female,Employer,Mobile App,Low,Counseling,Closed,Community awareness raised
+1049,2026-02-15,22:04:00.0000000,Kafanchan,Child Abuse,6,Female,Teacher,Dashboard,Critical,Shelter,Ongoing,Report escalated for urgent review
+1050,2025-07-22,23:33:00.0000000,Enugu,Child Abuse,6,Male,Neighbor,Community Center,Critical,Shelter,Ongoing,Victim under observation
+1051,2026-02-22,07:56:00.0000000,Lagos,Sexual Assault,32,Female,Relative,Mobile App,High,Shelter,Closed,Medical examination completed
+1052,2025-04-27,02:05:00.0000000,Enugu,Domestic Violence,39,Female,Relative,Hotline,High,Counseling,Ongoing,Victim supported through recovery
+1053,2025-11-24,17:45:00.0000000,Uyo,Child Abuse,13,Female,Neighbor,Community Center,Critical,Counseling,Ongoing,Child removed from home
+1054,2026-03-25,01:16:00.0000000,Enugu,Sexual Assault,29,Female,Colleague,Dashboard,High,Medical Care,Closed,Police case filed
+1055,2025-11-29,18:19:00.0000000,Abuja,Child Abuse,9,Female,Neighbor,Hotline,Critical,Counseling,Ongoing,Victim in foster care
+1056,2025-12-30,23:02:00.0000000,Ibadan,Child Abuse,16,Female,Guardian,Mobile App,High,Shelter,Ongoing,Report escalated for urgent review
+1057,2025-12-05,02:41:00.0000000,Uyo,Child Abuse,16,Male,Relative,Hotline,Critical,Counseling,Closed,Victim in foster care
+1058,2025-09-07,15:11:00.0000000,Zaria,Sexual Assault,40,Female,Colleague,Hotline,Critical,Medical Care,Ongoing,Victim in hospital care
+1059,2025-07-25,06:46:00.0000000,Enugu,Child Abuse,15,Female,Relative,Mobile App,Critical,Counseling,Ongoing,Case marked high priority
+1060,2026-01-19,15:47:00.0000000,Abuja,Sexual Assault,22,Male,Neighbor,Mobile App,Critical,Medical Care,Ongoing,Case reported to police
+1061,2026-03-29,16:58:00.0000000,Enugu,Sexual Assault,24,Female,Colleague,Community Center,High,Shelter,Closed,Emergency services involved
+1062,2025-11-19,15:35:00.0000000,Kano,Domestic Violence,25,Female,Spouse,Dashboard,Critical,Counseling,Ongoing,Victim receiving ongoing therapy
+1063,2025-09-09,09:25:00.0000000,Enugu,Domestic Violence,24,Female,Neighbor,Mobile App,High,Shelter,Ongoing,Victim receiving ongoing therapy
+1064,2025-12-15,22:46:00.0000000,Lagos,Child Abuse,5,Male,Guardian,Dashboard,Critical,Medical Care,Ongoing,Support services assigned
+1065,2025-08-24,09:25:00.0000000,Kaduna,Domestic Violence,26,Female,Neighbor,Hotline,High,Counseling,Ongoing,Counseling sessions ongoing
+1066,2025-10-01,21:16:00.0000000,Kafanchan,Sexual Assault,29,Female,Colleague,Mobile App,High,Medical Care,Closed,Police case filed
+1067,2026-03-24,04:51:00.0000000,Lagos,Child Abuse,10,Male,Neighbor,Mobile App,High,Counseling,Closed,Case under child protection services
+1068,2026-01-17,19:42:00.0000000,Enugu,Domestic Violence,30,Male,Relative,Mobile App,High,Counseling,Closed,Case assigned to field officer
+1069,2026-04-12,03:19:00.0000000,Port Harcourt,Child Abuse,5,Female,Teacher,Dashboard,Critical,Medical Care,Ongoing,Victim under continuous care
+1070,2025-10-04,19:06:00.0000000,Kafanchan,Harassment,45,Female,Stranger,Community Center,Low,Counseling,Closed,Community leaders notified
+1071,2025-12-21,12:35:00.0000000,Enugu,Sexual Assault,39,Female,Colleague,Mobile App,Critical,Medical Care,Ongoing,Victim awaiting legal support
+1072,2026-02-13,01:15:00.0000000,Lagos,Sexual Assault,37,Female,Neighbor,Hotline,Critical,Legal Aid,Closed,Legal action in progress
+1073,2026-03-15,06:36:00.0000000,Port Harcourt,Harassment,16,Female,Neighbor,Community Center,Low,Counseling,Closed,Case under review
+1074,2025-06-21,21:30:00.0000000,Enugu,Domestic Violence,32,Female,Neighbor,Mobile App,High,Legal Aid,Ongoing,Support plan developed
+1075,2026-03-18,00:41:00.0000000,Zaria,Domestic Violence,34,Female,Partner,Dashboard,Medium,Counseling,Closed,Support plan developed
+1076,2026-04-16,01:56:00.0000000,Zaria,Sexual Assault,27,Female,Neighbor,Hotline,High,Medical Care,Ongoing,Victim receiving medical attention
+1077,2025-05-14,23:19:00.0000000,Kafanchan,Harassment,35,Male,Employer,Mobile App,Low,Counseling,Closed,Community awareness raised
+1078,2025-07-17,07:58:00.0000000,Kafanchan,Child Abuse,8,Male,Guardian,Community Center,High,Medical Care,Ongoing,Victim in foster care
+1079,2025-12-06,05:48:00.0000000,Enugu,Harassment,36,Female,Employer,Mobile App,Low,Legal Aid,Ongoing,Incident confirmed by witnesses
+1080,2025-08-26,13:53:00.0000000,Kafanchan,Domestic Violence,40,Female,Spouse,Community Center,High,Counseling,Ongoing,Protection order requested
+1081,2026-01-05,16:53:00.0000000,Zaria,Domestic Violence,43,Female,Partner,Dashboard,Critical,Legal Aid,Closed,Counseling sessions ongoing
+1082,2025-05-19,13:19:00.0000000,Port Harcourt,Child Abuse,13,Female,Guardian,Mobile App,Critical,Counseling,Ongoing,Child safely relocated
+1083,2025-12-18,06:08:00.0000000,Kafanchan,Harassment,24,Female,Stranger,Dashboard,High,Counseling,Closed,Street harassment reported
+1084,2026-03-01,18:38:00.0000000,Ibadan,Domestic Violence,26,Female,Partner,Community Center,High,Shelter,Ongoing,Victim moved to secure location
+1085,2026-01-23,14:26:00.0000000,Port Harcourt,Sexual Assault,18,Female,Neighbor,Dashboard,High,Shelter,Ongoing,Suspect identified and questioned
+1086,2025-11-08,17:50:00.0000000,Kafanchan,Sexual Assault,26,Female,Teacher,Community Center,Critical,Shelter,Ongoing,Police case filed
+1087,2025-07-23,08:48:00.0000000,Uyo,Harassment,17,Female,Colleague,Dashboard,Low,Legal Aid,Closed,Report validated by NGO
+1088,2025-05-03,17:03:00.0000000,Enugu,Domestic Violence,33,Female,Partner,Community Center,High,Shelter,Ongoing,Temporary shelter provided
+1089,2026-02-08,13:28:00.0000000,Zaria,Harassment,39,Female,Teacher,Mobile App,Medium,Counseling,Ongoing,Community leaders notified
+1090,2026-02-20,07:02:00.0000000,Kaduna,Child Abuse,11,Female,Guardian,Dashboard,Critical,Counseling,Closed,Support services assigned
+1091,2026-03-16,08:01:00.0000000,Abuja,Sexual Assault,38,Female,Teacher,Mobile App,Critical,Shelter,Closed,Case reported to police
+1092,2025-06-08,21:47:00.0000000,Lagos,Child Abuse,11,Female,Relative,Hotline,High,Counseling,Ongoing,Victim in foster care
+1093,2025-08-09,11:37:00.0000000,Uyo,Harassment,43,Female,Employer,Dashboard,Medium,Counseling,Closed,Street harassment reported
+1094,2025-05-21,12:34:00.0000000,Enugu,Child Abuse,12,Female,Guardian,Mobile App,Critical,Medical Care,Ongoing,Victim under observation
+1095,2025-06-25,19:34:00.0000000,Lagos,Sexual Assault,18,Female,Relative,Community Center,High,Legal Aid,Ongoing,Victim awaiting legal support
+1096,2025-05-16,02:49:00.0000000,Lagos,Domestic Violence,20,Female,Spouse,Mobile App,Medium,Counseling,Ongoing,Case transferred to social services
+1097,2025-12-04,01:31:00.0000000,Kaduna,Domestic Violence,18,Female,Relative,Hotline,High,Shelter,Closed,Victim considering separation
+1098,2025-11-09,19:19:00.0000000,Kafanchan,Harassment,34,Male,Colleague,Hotline,Medium,Counseling,Ongoing,Community awareness raised
+1099,2025-09-15,05:06:00.0000000,Kafanchan,Sexual Assault,20,Female,Neighbor,Mobile App,Critical,Medical Care,Closed,Case reported to police
+1100,2025-08-05,04:33:00.0000000,Ibadan,Sexual Assault,32,Female,Teacher,Community Center,High,Shelter,Ongoing,Police investigation in progress
+1101,2025-08-21,04:33:00.0000000,Ibadan,Sexual Assault,35,Female,Spouse,Community Center,Critical,Shelter,Ongoing,Victim supported through recovery
+1102,2026-02-20,14:30:00.0000000,Kaduna,Domestic Violence,27,Female,Spouse,Mobile App,High,Counseling,Ongoing,Case under multidisciplinary review
+1103,2026-03-23,09:15:00.0000000,Zaria,Sexual Assault,16,Female,Neighbor,Community Center,Critical,Medical Care,Closed,Case reported to police
+1104,2025-06-23,20:45:00.0000000,Kaduna,Harassment,35,Male,Employer,Dashboard,Medium,Legal Aid,Ongoing,Awaiting court hearing
+1105,2025-12-28,11:00:00.0000000,Kafanchan,Child Abuse,12,Female,Relative,Hotline,Critical,Shelter,Ongoing,Child placed in protective custody
+1106,2025-12-09,18:20:00.0000000,Zaria,Sexual Assault,22,Female,Stranger,Mobile App,High,Medical Care,Ongoing,Police investigation in progress
+1107,2026-01-16,07:45:00.0000000,Kaduna,Domestic Violence,40,Female,Spouse,Dashboard,Medium,Counseling,Closed,Victim declined further support
+1108,2025-09-18,21:10:00.0000000,Kaduna,Harassment,29,Female,Employer,Community Center,Low,Legal Aid,Ongoing,Workplace mediation scheduled
+1109,2025-10-20,15:30:00.0000000,Zaria,Sexual Assault,18,Female,Teacher,Hotline,Critical,Medical Care,Ongoing,Case escalated to authorities
+1110,2025-07-14,23:00:00.0000000,Kaduna,Domestic Violence,33,Female,Spouse,Mobile App,High,Shelter,Ongoing,Victim in safe house
+1111,2025-09-15,10:25:00.0000000,Kafanchan,Harassment,26,Female,Stranger,Dashboard,Medium,Counseling,Closed,No further action requested
+1112,2025-08-31,19:40:00.0000000,Zaria,Child Abuse,9,Male,Relative,Community Center,Critical,Shelter,Ongoing,Case under child protection services
+1113,2025-07-07,08:00:00.0000000,Kaduna,Sexual Assault,30,Female,Colleague,Mobile App,High,Medical Care,Ongoing,Victim pursuing legal case
+1114,2026-02-14,16:45:00.0000000,Kafanchan,Domestic Violence,25,Female,Spouse,Hotline,Medium,Counseling,Ongoing,Victim considering separation
+1115,2026-04-21,12:10:00.0000000,Zaria,Harassment,32,Female,Employer,Dashboard,Low,Legal Aid,Closed,Resolved internally
+1116,2025-07-23,22:30:00.0000000,Kaduna,Sexual Assault,19,Female,Stranger,Mobile App,Critical,Medical Care,Ongoing,Police case filed
+1117,2025-12-27,09:00:00.0000000,Kafanchan,Child Abuse,14,Female,Relative,Community Center,High,Shelter,Ongoing,Victim in foster care
+1118,2026-03-19,17:20:00.0000000,Zaria,Domestic Violence,38,Female,Spouse,Hotline,Medium,Counseling,Ongoing,Victim receiving ongoing therapy
+1119,2025-07-28,13:15:00.0000000,Kaduna,Harassment,28,Female,Neighbor,Dashboard,Low,Legal Aid,Closed,Case settled informally
+1120,2026-01-19,20:50:00.0000000,Kafanchan,Sexual Assault,21,Female,Stranger,Mobile App,Critical,Medical Care,Ongoing,Victim in hospital care
+1121,2025-09-22,11:35:00.0000000,Zaria,Domestic Violence,31,Female,Spouse,Community Center,High,Counseling,Ongoing,Victim preparing legal documents
