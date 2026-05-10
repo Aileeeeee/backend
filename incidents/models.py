@@ -53,7 +53,12 @@ class Incident(models.Model):
     support_provided         = models.CharField(max_length=50, blank=True, default='')
     notes                    = models.TextField(blank=True, default='')
 
+    # Acknowledge fields 
+    is_acknowledged = models.BooleanField(default=False)
+    acknowledged_at = models.DateTimeField(null=True, blank=True)
 
+    class Meta:
+        ordering = ['-incident_date', '-incident_time']
 
     def __str__(self):
         return f" [{self.id}] {self.incident_type} - {self.location} ({self.incident_date})]"
