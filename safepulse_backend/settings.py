@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "rest_framework_simplejwt",
+    'rest_framework_simplejwt.token_blacklist', 
     "drf_spectacular",
     "corsheaders",
     "incidents",
@@ -148,10 +149,10 @@ SPECTACULAR_SETTINGS = {
 
 SIMPLE_JWT = {
     # Increase the Access Token lifetime (e.g., to 1 hour)
-    'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
     
     # Increase the Refresh Token lifetime (e.g., to 7 days)
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     
     # Optional: Allow tokens to be refreshed
     'ROTATE_REFRESH_TOKENS': True,

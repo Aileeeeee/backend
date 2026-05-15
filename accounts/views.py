@@ -64,13 +64,17 @@ class LogoutView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
+        try:
+            refresh_token = request.data["refresh"]
+            token = RefreshToken(refresh_token)
+            token.blacklist()  # Destroys the refresh token's validity
+            return Response({"message": "Successfully logged out."}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": "Invalid or missing refresh token."}, status=status.HTTP_400_BAD_REQUEST)
+
         # 4. Note: With SimpleJWT, "Logging out" on the server usually involves 
         # blacklisting the refresh token. If you haven't enabled the Blacklist app, 
         # the client simply deletes the token locally.
-        return Response(
-            {'message': 'Logged out successfully.'},
-            status=status.HTTP_200_OK
-        )
 
 class ProfileView(APIView):
     permission_classes = [permissions.IsAuthenticated]
