@@ -126,3 +126,75 @@ class IncidentStatsView(APIView):
                 .annotate(count=Count('id'))
             ),
         })
+    
+from accounts.permissions import IsCoordinator, IsFieldStaffOrAbove
+
+
+class NGODashboardView(APIView):
+    """
+    GET /api/incidents/dashboard/
+    Any logged in NGO user — sees incidents in their city only.
+    """
+    permission_classes = [IsFieldStaffOrAbove]
+
+    def get(self, request):
+        coverage_area = request.user.coverage_area
+
+        qs = Incident.objects.filter(
+            location__icontains=coverage_area
+        ).order_by('-incident_date', '-incident_time')
+
+        return Response({
+            'coverage_area': coverage_area,
+            'organisation': request.user.organisation_name,
+            'role': request.user.role,
+            'total_in_area': qs.count(),
+            'critical_ongoing': qs.filter(
+                severity_level='Critical',
+                follow_up_status='Ongoing'
+            ).count(),
+            'pending_acknowledgement': qs.filter(
+                is_acknowledged=False
+            ).count(),
+            'incidents': IncidentSerializer(qs, many=True).data,
+        })
+
+
+class CoordinatorDashboardView(APIView):
+    """
+    GET /api/incidents/coordinator-dashboard/
+    Coordinators only — sees all incidents across their state.
+    """
+    permission_classes = [IsCoordinator]
+
+    def get(self, request):
+        from django.db.models import Count
+
+        state = request.user.organisation.state if request.user.organisation else ''
+
+        qs = Incident.objects.filter(
+            location__icontains=state
+        ).order_by('-incident_date', '-incident_time')
+
+        if not qs.exists():
+            qs = Incident.objects.all().order_by('-incident_date', '-incident_time')
+
+        return Response({
+            'state': state,
+            'organisation': request.user.organisation_name,
+            'role': 'COORDINATOR',
+            'total_incidents': qs.count(),
+            'critical_ongoing': qs.filter(
+                severity_level='Critical',
+                follow_up_status='Ongoing'
+            ).count(),
+            'pending_acknowledgement': qs.filter(
+                is_acknowledged=False
+            ).count(),
+            'by_city': list(
+                qs.values('location')
+                .annotate(count=Count('id'))
+                .order_by('-count')
+            ),
+            'incidents': IncidentSerializer(qs, many=True).data,
+        })
