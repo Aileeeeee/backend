@@ -1,8 +1,10 @@
 from django.urls import path, include
-from incidents.views import IncidentListView, AcknowledgeIncidentView
+from . import views
 
 
 urlpatterns = [
-    path('incidents/', IncidentListView.as_view(),name='incident-list'),
-    path('incidents/<int:pk>/acknowledge/', AcknowledgeIncidentView.as_view(), name='acknowledge-incident'),
+    path('incidents/', views.IncidentListView.as_view()),
+    path('incidents/submit/', views.IncidentSubmitView.as_view()),
+    path('incidents/stats/', views.IncidentStatsView.as_view()),
+    path('incidents/<int:pk>/acknowledge/', views.AcknowledgeIncidentView.as_view()),
 ]

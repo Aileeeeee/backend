@@ -60,6 +60,11 @@ class Incident(models.Model):
     class Meta:
         ordering = ['-incident_date', '-incident_time']
 
+        indexes = [
+        models.Index(fields=['location', 'incident_date']),
+        models.Index(fields=['severity_level', 'follow_up_status']),
+    ]
+
     def __str__(self):
         return f" [{self.id}] {self.incident_type} - {self.location} ({self.incident_date})]"
     
