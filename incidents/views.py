@@ -8,9 +8,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, permissions
 
-from incidents.models import Incident
-from incidents.serializers import IncidentSerializer, IncidentSubmissionSerializer
-
+from incidents.models import Incident,RegisteredUser, TrustedContact
+from incidents.serializers import IncidentSerializer, IncidentSubmissionSerializer,RegisteredUserSerializer, TrustedContactSerializer
 
 # ── INCIDENT LIST — for dashboard cards ──────────────────────────────────
 class IncidentListView(ListAPIView):
@@ -50,6 +49,23 @@ class IncidentListView(ListAPIView):
 
         return queryset
 
+class IncidentDetailView(APIView):
+    """
+    GET /api/incidents/incidents/<pk>/
+    Returns a single incident by ID.
+    """
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, pk):
+        try:
+            incident = Incident.objects.get(pk=pk)
+            serializer = IncidentSerializer(incident)
+            return Response(serializer.data)
+        except Incident.DoesNotExist:
+            return Response(
+                {'error': 'Incident not found.'},
+                status=status.HTTP_404_NOT_FOUND
+            )
 
 # INCIDENT SUBMISSION — from mobile app
 class IncidentSubmitView(APIView):
@@ -59,17 +75,65 @@ class IncidentSubmitView(APIView):
         serializer = IncidentSubmissionSerializer(data=request.data)
         if serializer.is_valid():
             incident = serializer.save()
+
+            # Build location string from coordinates if address not provided
+            lat = request.data.get('latitude')
+            lng = request.data.get('longitude')
+            
+            if lat and lng:
+                update_fields = []
+                if incident.location in ['Unknown', '', None]:
+                    incident.location = f'{float(lat):.4f}, {float(lng):.4f}'
+                    update_fields.append('location')
+                incident.latitude = float(lat)
+                incident.longitude = float(lng)
+                if request.data.get('location_accuracy'):
+                    incident.location_accuracy = float(request.data.get('location_accuracy'))
+                    update_fields.append('location_accuracy')
+                update_fields += ['latitude', 'longitude']
+                incident.save(update_fields=update_fields)
+                
+            # Fire SMS alerts if this is a mobile pulse
+            is_pulse = (
+                request.data.get('severity_level') == 'Critical' and
+                request.data.get('reporting_channel') == 'Mobile App'
+            )
+
+            if is_pulse:
+                try:
+                    from sms.handlers import dispatch_pulse
+                    landmark = incident.location
+                    if lat and lng:
+                        landmark = f'GPS: {float(lat):.4f}, {float(lng):.4f} — {incident.location}'
+                    dispatch_pulse(
+                        phone_hash=request.data.get('device_hash', ''),
+                        zone=incident.location,
+                        landmark=landmark,
+                        carrier='Mobile App',
+                        location_confidence='HIGH' if lat and lng else 'LOW',
+                        location_source='GPS' if lat and lng else 'UNKNOWN',
+                        network_code='',
+                        skip_incident_creation=True, 
+                    )
+                except Exception as e:
+                    print(f'Mobile pulse dispatch error: {e}')
+
             return Response(
-                {'id': incident.id, 'message': 'Report received. You are not alone.'},
+                {
+                    'id': incident.id,
+                    'message': 'Report received. You are not alone.',
+                    'location_received': bool(lat and lng),
+                },
                 status=status.HTTP_201_CREATED
             )
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 #  ACKNOWLEDGE — David acknowledges an incident 
 class AcknowledgeIncidentView(APIView):
-    permission_classes = [permissions.AllowAny]
-
+    permission_classes = [permissions.IsAuthenticated]
+    
     def patch(self, request, pk):
         try:
             incident = Incident.objects.get(pk=pk)
@@ -169,6 +233,8 @@ class CoordinatorDashboardView(APIView):
 
     def get(self, request):
         from django.db.models import Count
+        from django.utils import timezone
+        from datetime import timedelta
 
         state = request.user.organisation.state if request.user.organisation else ''
 
@@ -179,18 +245,34 @@ class CoordinatorDashboardView(APIView):
         if not qs.exists():
             qs = Incident.objects.all().order_by('-incident_date', '-incident_time')
 
+        # ── New reports (last 24 hours) ───────────────────────────────────────
+        now           = timezone.now()
+        last_24h      = now - timedelta(hours=24)
+        last_48h      = now - timedelta(hours=48)
+
+        new_reports   = qs.filter(created_at__gte=last_24h).count()
+
+        # Delta = today's count minus yesterday's count
+        yesterday     = qs.filter(
+            created_at__gte=last_48h,
+            created_at__lt=last_24h,
+        ).count()
+        new_reports_delta = new_reports - yesterday
+
         return Response({
-            'state': state,
-            'organisation': request.user.organisation_name,
-            'role': 'COORDINATOR',
-            'total_incidents': qs.count(),
-            'critical_ongoing': qs.filter(
-                severity_level='Critical',
-                follow_up_status='Ongoing'
-            ).count(),
+            'state':                   state,
+            'organisation':            request.user.organisation_name,
+            'role':                    'COORDINATOR',
+            'total_incidents':         qs.count(),
+            'new_reports':             new_reports,        # ← added
+            'new_reports_delta':       new_reports_delta,  # ← added
+            'critical_ongoing':        qs.filter(
+                                           severity_level='Critical',
+                                           follow_up_status='Ongoing'
+                                       ).count(),
             'pending_acknowledgement': qs.filter(
-                is_acknowledged=False
-            ).count(),
+                                           is_acknowledged=False
+                                       ).count(),
             'by_city': list(
                 qs.values('location')
                 .annotate(count=Count('id'))
@@ -198,3 +280,98 @@ class CoordinatorDashboardView(APIView):
             ),
             'incidents': IncidentSerializer(qs, many=True).data,
         })
+    
+
+class RegisterDeviceView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        phone_hash = request.data.get('phone_hash')
+        zone = request.data.get('registered_zone', 'Unknown')
+        landmark = request.data.get('landmark', 'Mobile App User')
+
+        if not phone_hash:
+            return Response(
+                {'error': 'phone_hash is required'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        user, created = RegisteredUser.objects.get_or_create(
+            phone_hash=phone_hash,
+            defaults={
+                'registered_zone': zone,
+                'landmark': landmark,
+            }
+        )
+
+        return Response(
+            {
+                'id': user.id,
+                'phone_hash': user.phone_hash,
+                'registered_zone': user.registered_zone,
+                'created': created,
+            },
+            status=status.HTTP_201_CREATED if created else status.HTTP_200_OK
+        )
+
+
+class TrustedContactListCreateView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request):
+        phone_hash = request.query_params.get('phone_hash')
+        if not phone_hash:
+            return Response([], status=status.HTTP_200_OK)
+        try:
+            user = RegisteredUser.objects.get(phone_hash=phone_hash)
+            contacts = TrustedContact.objects.filter(registered_user=user)
+            return Response(
+                TrustedContactSerializer(contacts, many=True).data,
+                status=status.HTTP_200_OK
+            )
+        except RegisteredUser.DoesNotExist:
+            return Response([], status=status.HTTP_200_OK)
+
+    def post(self, request):
+        phone_hash = request.data.get('phone_hash')
+        if not phone_hash:
+            return Response(
+                {'error': 'phone_hash is required'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        try:
+            user = RegisteredUser.objects.get(phone_hash=phone_hash)
+        except RegisteredUser.DoesNotExist:
+            return Response(
+                {'error': 'Device not registered'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        contact = TrustedContact.objects.create(
+            registered_user=user,
+            contact_name=request.data.get('contact_name', ''),
+            contact_phone=request.data.get('contact_phone', ''),
+            relationship=request.data.get('relationship', 'Unknown'),
+        )
+        return Response(
+            TrustedContactSerializer(contact).data,
+            status=status.HTTP_201_CREATED
+        )
+
+
+class TrustedContactDeleteView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def delete(self, request, pk):
+        try:
+            contact = TrustedContact.objects.get(pk=pk)
+            contact.delete()
+            return Response(
+                {'message': 'Contact removed'},
+                status=status.HTTP_200_OK
+            )
+        except TrustedContact.DoesNotExist:
+            return Response(
+                {'error': 'Contact not found'},
+                status=status.HTTP_404_NOT_FOUND
+            )

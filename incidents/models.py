@@ -30,7 +30,19 @@ class Incident(models.Model):
         ('Ongoing', 'Ongoing'),
         ('Closed',  'Closed'),
     ]
-
+    
+    # Location confidence 
+    LOCATION_CONFIDENCE = [
+        ('HIGH',   'High — live GPS or confirmed'),
+        ('MEDIUM', 'Medium — user confirmed recently'),
+        ('LOW',    'Low — registered fallback only'),
+    ]
+    LOCATION_SOURCE = [
+        ('GPS',         'GPS — mobile app'),
+        ('REGISTERED',  'Registered fallback'),
+        ('SMS_UPDATE',  'Updated via SMS'),
+        ('USSD_UPDATE', 'Updated via USSD'),
+    ]
 
      # Fields filled by the server
     incident_date     = models.DateField()
@@ -57,6 +69,21 @@ class Incident(models.Model):
     is_acknowledged = models.BooleanField(default=False)
     acknowledged_at = models.DateTimeField(null=True, blank=True)
 
+    # location confidence fields 
+    location_confidence = models.CharField(max_length=10, choices=LOCATION_CONFIDENCE,default='LOW', blank=True)
+    location_source = models.CharField(max_length=15, choices=LOCATION_SOURCE,default='REGISTERED', blank=True)
+    last_verified_location  = models.TextField(blank=True, default='')
+
+    latitude          = models.FloatField(null=True, blank=True)
+    longitude         = models.FloatField(null=True, blank=True)
+    location_accuracy = models.FloatField(null=True, blank=True)
+    reporter_type     = models.CharField(
+        max_length=20,
+        choices=[('victim', 'Victim'), ('bystander', 'Bystander')],
+        default='victim',
+        blank=True,
+    )
+
     class Meta:
         ordering = ['-incident_date', '-incident_time']
 
@@ -76,6 +103,15 @@ class RegisteredUser(models.Model):
     network_code    = models.CharField(max_length=20,  blank=True) 
     registered_at   = models.DateTimeField(auto_now_add=True)
     last_pulse_at   = models.DateTimeField(null=True, blank=True)
+
+    # location tracking fields 
+    last_known_location     = models.TextField(blank=True, default='')
+    last_location_update_at = models.DateTimeField(null=True, blank=True)
+    last_location_source    = models.CharField(max_length=15,choices=[
+            ('GPS', 'GPS'), ('SMS_UPDATE', 'SMS Update'),
+            ('USSD_UPDATE', 'USSD Update'), ('REGISTERED', 'Registered'),
+        ],
+        default='REGISTERED', blank=True)
  
     NETWORK_CODE_MAP = {
         '62120': 'Airtel Nigeria',
@@ -93,6 +129,11 @@ class RegisteredUser(models.Model):
     def carrier_from_code(cls, code):
         return cls.NETWORK_CODE_MAP.get(str(code), 'Unknown')
  
+    def get_best_location(self):
+        if self.last_known_location:
+            return self.last_known_location
+        return self.landmark or self.registered_zone
+
     def __str__(self):
         return f'User [{self.phone_hash[:8]}...] — {self.registered_zone}'
 
@@ -103,7 +144,8 @@ class TrustedContact(models.Model):
                                          related_name='trusted_contacts')
     contact_phone   = models.CharField(max_length=20)   # Plain number — we need to SMS them
     contact_name    = models.CharField(max_length=100)  # e.g. Grace
-    relationship    = models.CharField(max_length=50)   # e.g. Sister
+    contact_gender =  models.CharField(max_length=100,null=True, blank=True)  # e.g. Female
+    relationship    = models.CharField(max_length=50,null=True, blank=True)   # e.g. Sister
     added_at        = models.DateTimeField(auto_now_add=True)
  
     def __str__(self):
@@ -119,3 +161,26 @@ class NGOContact(models.Model):
  
     def __str__(self):
         return f'{self.org_name} — {self.zone}'
+
+class PulseSession(models.Model):
+    TIMEOUT_SECONDS = 15
+
+    STATE_CHOICES = [
+        ('WAITING_CONFIRM',  'Waiting for YES/NO'),
+        ('WAITING_LANDMARK', 'Waiting for landmark update'),
+        ('COMPLETED',        'Completed'),
+        ('TIMED_OUT',        'Timed out'),
+    ]
+
+    phone_hash      = models.CharField(max_length=64, db_index=True)
+    network_code    = models.CharField(max_length=20, blank=True)
+    state           = models.CharField(max_length=20, choices=STATE_CHOICES,default='WAITING_CONFIRM')
+    created_at      = models.DateTimeField(auto_now_add=True)
+    expires_at      = models.DateTimeField()
+
+    def is_expired(self):
+        from django.utils import timezone
+        return timezone.now() > self.expires_at
+
+    def __str__(self):
+        return f'PulseSession [{self.phone_hash[:8]}...] — {self.state}'

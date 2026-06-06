@@ -2,9 +2,9 @@ from django.contrib.auth import authenticate, get_user_model
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, permissions
-# 1. Import SimpleJWT tokens instead of DRF authtoken
 from rest_framework_simplejwt.tokens import RefreshToken
-from .serializers import SignupSerializer, UserProfileSerializer
+from .serializers import SignupSerializer, UserProfileSerializer,OrganisationSerializer
+from .models import Organisation
 
 User = get_user_model()
 
@@ -21,15 +21,18 @@ class SignupView(APIView):
 
     def post(self, request):
         serializer = SignupSerializer(data=request.data)
+        print("REQUEST DATA:", request.data)
         if serializer.is_valid():
             user = serializer.save()
             # 2. Use SimpleJWT tokens
             tokens = get_tokens_for_user(user)
+
             return Response({
                 'tokens': tokens,
                 'user': UserProfileSerializer(user).data,
                 'message': 'Account created successfully.'
             }, status=status.HTTP_201_CREATED)
+        print("SERIALIZER ERRORS:", serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class LoginView(APIView):
@@ -82,3 +85,17 @@ class ProfileView(APIView):
     def get(self, request):
         serializer = UserProfileSerializer(request.user)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class OrganisationSearchView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request):
+        query = request.query_params.get('q', '')
+        if len(query) < 2:
+            return Response([])
+        orgs = Organisation.objects.filter(
+            is_active=True,
+            name__icontains=query
+        )[:10]
+        serializer = OrganisationSerializer(orgs, many=True)
+        return Response(serializer.data)
