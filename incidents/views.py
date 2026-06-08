@@ -50,22 +50,112 @@ class IncidentListView(ListAPIView):
         return queryset
 
 class IncidentDetailView(APIView):
-    """
-    GET /api/incidents/incidents/<pk>/
-    Returns a single incident by ID.
-    """
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, pk):
         try:
             incident = Incident.objects.get(pk=pk)
-            serializer = IncidentSerializer(incident)
-            return Response(serializer.data)
         except Incident.DoesNotExist:
             return Response(
                 {'error': 'Incident not found.'},
                 status=status.HTTP_404_NOT_FOUND
             )
+
+        # Build timeline dynamically from incident state
+        timeline = []
+
+        # Step 1 — always exists
+        timeline.append({
+            'time':        incident.created_at.strftime('%I:%M %p'),
+            'title':       'Report received',
+            'description': f'Anonymous report submitted from {incident.location}',
+            'status':      'done',
+            'color':       'green',
+        })
+
+        # Step 2 — triage (acknowledged)
+        if incident.is_acknowledged:
+            timeline.append({
+                'time':        incident.acknowledged_at.strftime('%I:%M %p') if incident.acknowledged_at else '',
+                'title':       'Triage completed',
+                'description': f'Assigned {incident.severity_level.lower()} priority',
+                'status':      'done',
+                'color':       'orange',
+            })
+
+            # Step 3 — case assigned
+            timeline.append({
+                'time':        incident.acknowledged_at.strftime('%I:%M %p') if incident.acknowledged_at else '',
+                'title':       'Case assigned',
+                'description': f'Assigned to NGO',
+                'status':      'done',
+                'color':       'blue',
+            })
+
+        # Step 4 — trusted contact notified
+        trusted_contacts = []
+        if incident.registered_user:
+            try:
+                registered_user = RegisteredUser.objects.get(
+                    phone_hash=incident.phone_hash
+                )
+                contacts = TrustedContact.objects.filter(
+                    registered_user=incident.registered_user
+                )
+                trusted_contacts = [
+                    {
+                        'name':         c.contact_name,
+                        'relation':     c.relationship,
+                        'phone':        c.contact_phone,
+                        'notified_at':  incident.created_at.strftime('%I:%M %p'),
+                    }
+                    for c in contacts
+                ]
+                if trusted_contacts:
+                    timeline.append({
+                        'time':        incident.created_at.strftime('%I:%M %p'),
+                        'title':       'Trusted contact attempted',
+                        'description': 'Safe outreach initiated',
+                        'status':      'done',
+                        'color':       'purple',
+                    })
+            except RegisteredUser.DoesNotExist:
+                pass
+
+        # Step 5 — support provided
+        if incident.support_provided:
+            timeline.append({
+                'time':        '',
+                'title':       'Support provided',
+                'description': f'Referral sent to local NGO',
+                'status':      'done',
+                'color':       'green',
+            })
+
+        # Step 6 — closed
+        if incident.follow_up_status == 'Closed':
+            timeline.append({
+                'time':        incident.updated_at.strftime('%I:%M %p'),
+                'title':       'Case closed',
+                'description': 'No further escalation reported',
+                'status':      'done',
+                'color':       'green',
+            })
+        else:
+            timeline.append({
+                'time':        '',
+                'title':       'Awaiting acknowledgement' if not incident.is_acknowledged else 'Case ongoing',
+                'description': '',
+                'status':      'pending',
+                'color':       'grey',
+            })
+
+        serializer = IncidentSerializer(incident)
+        return Response({
+            **serializer.data,
+            'timeline':         timeline,
+            'trusted_contacts': trusted_contacts,
+        })
 
 # INCIDENT SUBMISSION — from mobile app
 class IncidentSubmitView(APIView):
@@ -106,7 +196,7 @@ class IncidentSubmitView(APIView):
                     if lat and lng:
                         landmark = f'GPS: {float(lat):.4f}, {float(lng):.4f} — {incident.location}'
                     dispatch_pulse(
-                        phone_hash=request.data.get('device_hash', ''),
+                        phone_hash=request.data.get('phone_hash', ''),
                         zone=incident.location,
                         landmark=landmark,
                         carrier='Mobile App',
