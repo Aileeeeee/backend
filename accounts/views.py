@@ -99,3 +99,73 @@ class OrganisationSearchView(APIView):
         )[:10]
         serializer = OrganisationSerializer(orgs, many=True)
         return Response(serializer.data)
+
+
+class UsernameAvailabilityView(APIView):
+    """
+    GET /api/auth/username-suggestions/?first_name=Adaeze&last_name=Okafor
+    Returns suggestions and checks availability.
+    
+    GET /api/auth/username-suggestions/?username=adaeze.okafor
+    Checks if a specific username is available.
+    """
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request):
+        first_name = request.query_params.get('first_name', '').lower().strip()
+        last_name  = request.query_params.get('last_name', '').lower().strip()
+        username   = request.query_params.get('username', '').lower().strip()
+
+        # ── Check single username availability ────────────────────────────
+        if username:
+            taken = User.objects.filter(username=username).exists()
+            return Response({
+                'username':   username,
+                'available':  not taken,
+            })
+
+        # ── Generate suggestions from first + last name ───────────────────
+        if not first_name or not last_name:
+            return Response(
+                {'error': 'first_name and last_name are required'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Clean names — remove spaces and special chars
+        import re
+        clean_first = re.sub(r'[^a-z0-9]', '', first_name)
+        clean_last  = re.sub(r'[^a-z0-9]', '', last_name)
+
+        # Generate candidate suggestions
+        candidates = [
+            f"{clean_first}.{clean_last}",           # adaeze.okafor
+            f"{clean_first}_{clean_last}",            # adaeze_okafor
+            f"{clean_first}{clean_last}",             # adaezeokafor
+            f"{clean_first[0]}{clean_last}",          # aokafor
+            f"{clean_first}.{clean_last[0]}",         # adaeze.o
+            f"{clean_first}{clean_last[:3]}",         # adaezeoKa
+            f"{clean_last}.{clean_first}",            # okafor.adaeze
+        ]
+
+        suggestions = []
+        for candidate in candidates:
+            if User.objects.filter(username=candidate).exists():
+                # Username taken — try adding numbers
+                for i in range(1, 10):
+                    numbered = f"{candidate}{i}"
+                    if not User.objects.filter(username=numbered).exists():
+                        suggestions.append({
+                            'username':  numbered,
+                            'available': True,
+                        })
+                        break
+            else:
+                suggestions.append({
+                    'username':  candidate,
+                    'available': True,
+                })
+
+            if len(suggestions) >= 5:
+                break
+
+        return Response({'suggestions': suggestions})

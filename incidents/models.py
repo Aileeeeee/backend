@@ -2,99 +2,6 @@ from django.db import models
 
 # Create your models here.
 
-class Incident(models.Model):
-
-    # Define Incident report options
-    INCIDENT_TYPES = [
-        ('Domestic Violence', 'Domestic Violence'),
-        ('Sexual Assault',    'Sexual Assault'),
-        ('Harassment',        'Harassment'),
-        ('Child Abuse',       'Child Abuse'),
-        ('Unknown',           'Unknown'),   # Used when PULSE arrives with no type info
-    ]
-    SEVERITY_LEVELS = [
-        ('Low',      'Low'),
-        ('Medium',   'Medium'),
-        ('High',     'High'),
-        ('Critical', 'Critical'),
-    ]
-    REPORTING_CHANNELS = [
-        ('Mobile App',       'Mobile App'),
-        ('Hotline',          'Hotline'),
-        ('Community Center', 'Community Center'),
-        ('Dashboard',        'Dashboard'),
-        ('SMS',              'SMS'),
-        ('USSD',             'USSD'),
-    ]
-    FOLLOW_UP_STATUS = [
-        ('Ongoing', 'Ongoing'),
-        ('Closed',  'Closed'),
-    ]
-    
-    # Location confidence 
-    LOCATION_CONFIDENCE = [
-        ('HIGH',   'High — live GPS or confirmed'),
-        ('MEDIUM', 'Medium — user confirmed recently'),
-        ('LOW',    'Low — registered fallback only'),
-    ]
-    LOCATION_SOURCE = [
-        ('GPS',         'GPS — mobile app'),
-        ('REGISTERED',  'Registered fallback'),
-        ('SMS_UPDATE',  'Updated via SMS'),
-        ('USSD_UPDATE', 'Updated via USSD'),
-    ]
-
-     # Fields filled by the server
-    incident_date     = models.DateField()
-    incident_time     = models.TimeField()
-    reporting_channel = models.CharField(max_length=50, choices=REPORTING_CHANNELS)
-    follow_up_status  = models.CharField(max_length=30, choices=FOLLOW_UP_STATUS, default='Ongoing')
-    is_anonymous      = models.BooleanField(default=True)
-    created_at        = models.DateTimeField(auto_now_add=True)
-    updated_at        = models.DateTimeField(auto_now=True)
-
-     # Fields from SMS REPORT command (or app) ---
-    location          = models.CharField(max_length=100, db_index=True)
-    incident_type     = models.CharField(max_length=50, choices=INCIDENT_TYPES, db_index=True)
-    severity_level    = models.CharField(max_length=20, choices=SEVERITY_LEVELS, db_index=True)
-
-    # Fields only the app can provide — optional for SMS 
-    victim_age               = models.PositiveIntegerField(null=True, blank=True)
-    victim_gender            = models.CharField(max_length=20, blank=True, default='Unknown')
-    perpetrator_relationship = models.CharField(max_length=50, blank=True, default='Unknown')
-    support_provided         = models.CharField(max_length=50, blank=True, default='')
-    notes                    = models.TextField(blank=True, default='')
-
-    # Acknowledge fields 
-    is_acknowledged = models.BooleanField(default=False)
-    acknowledged_at = models.DateTimeField(null=True, blank=True)
-
-    # location confidence fields 
-    location_confidence = models.CharField(max_length=10, choices=LOCATION_CONFIDENCE,default='LOW', blank=True)
-    location_source = models.CharField(max_length=15, choices=LOCATION_SOURCE,default='REGISTERED', blank=True)
-    last_verified_location  = models.TextField(blank=True, default='')
-
-    latitude          = models.FloatField(null=True, blank=True)
-    longitude         = models.FloatField(null=True, blank=True)
-    location_accuracy = models.FloatField(null=True, blank=True)
-    reporter_type     = models.CharField(
-        max_length=20,
-        choices=[('victim', 'Victim'), ('bystander', 'Bystander')],
-        default='victim',
-        blank=True,
-    )
-
-    class Meta:
-        ordering = ['-incident_date', '-incident_time']
-
-        indexes = [
-        models.Index(fields=['location', 'incident_date']),
-        models.Index(fields=['severity_level', 'follow_up_status']),
-    ]
-
-    def __str__(self):
-        return f" [{self.id}] {self.incident_type} - {self.location} ({self.incident_date})]"
-    
 class RegisteredUser(models.Model):
     phone_hash      = models.CharField(max_length=64, unique=True)  
     registered_zone = models.CharField(max_length=100)             
@@ -162,6 +69,107 @@ class NGOContact(models.Model):
     def __str__(self):
         return f'{self.org_name} — {self.zone}'
 
+class Incident(models.Model):
+
+    # Define Incident report options
+    INCIDENT_TYPES = [
+        ('Domestic Violence', 'Domestic Violence'),
+        ('Sexual Assault',    'Sexual Assault'),
+        ('Harassment',        'Harassment'),
+        ('Child Abuse',       'Child Abuse'),
+        ('Unknown',           'Unknown'),   # Used when PULSE arrives with no type info
+    ]
+    SEVERITY_LEVELS = [
+        ('Low',      'Low'),
+        ('Medium',   'Medium'),
+        ('High',     'High'),
+        ('Critical', 'Critical'),
+    ]
+    REPORTING_CHANNELS = [
+        ('Mobile App',       'Mobile App'),
+        ('Hotline',          'Hotline'),
+        ('Community Center', 'Community Center'),
+        ('Dashboard',        'Dashboard'),
+        ('SMS',              'SMS'),
+        ('USSD',             'USSD'),
+    ]
+    FOLLOW_UP_STATUS = [
+        ('Ongoing', 'Ongoing'),
+        ('Closed',  'Closed'),
+    ]
+    
+    # Location confidence 
+    LOCATION_CONFIDENCE = [
+        ('HIGH',   'High — live GPS or confirmed'),
+        ('MEDIUM', 'Medium — user confirmed recently'),
+        ('LOW',    'Low — registered fallback only'),
+    ]
+    LOCATION_SOURCE = [
+        ('GPS',         'GPS — mobile app'),
+        ('REGISTERED',  'Registered fallback'),
+        ('SMS_UPDATE',  'Updated via SMS'),
+        ('USSD_UPDATE', 'Updated via USSD'),
+    ]
+
+     # Fields filled by the server
+    incident_date     = models.DateField()
+    incident_time     = models.TimeField()
+    reporting_channel = models.CharField(max_length=50, choices=REPORTING_CHANNELS)
+    follow_up_status  = models.CharField(max_length=30, choices=FOLLOW_UP_STATUS, default='Ongoing')
+    is_anonymous      = models.BooleanField(default=True)
+    created_at        = models.DateTimeField(auto_now_add=True)
+    updated_at        = models.DateTimeField(auto_now=True)
+
+     # Fields from SMS REPORT command (or app) ---
+    location          = models.CharField(max_length=100, db_index=True)
+    incident_type     = models.CharField(max_length=50, choices=INCIDENT_TYPES, db_index=True)
+    severity_level    = models.CharField(max_length=20, choices=SEVERITY_LEVELS, db_index=True)
+
+    # Fields only the app can provide — optional for SMS 
+    victim_age               = models.PositiveIntegerField(null=True, blank=True)
+    victim_gender            = models.CharField(max_length=20, blank=True, default='Unknown')
+    perpetrator_relationship = models.CharField(max_length=50, blank=True, default='Unknown')
+    support_provided         = models.CharField(max_length=50, blank=True, default='')
+    notes                    = models.TextField(blank=True, default='')
+    registered_user = models.ForeignKey(
+        RegisteredUser,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="incidents"
+    )
+
+    # Acknowledge fields 
+    is_acknowledged = models.BooleanField(default=False)
+    acknowledged_at = models.DateTimeField(null=True, blank=True)
+
+    # location confidence fields 
+    location_confidence = models.CharField(max_length=10, choices=LOCATION_CONFIDENCE,default='LOW', blank=True)
+    location_source = models.CharField(max_length=15, choices=LOCATION_SOURCE,default='REGISTERED', blank=True)
+    last_verified_location  = models.TextField(blank=True, default='')
+
+    latitude          = models.FloatField(null=True, blank=True)
+    longitude         = models.FloatField(null=True, blank=True)
+    location_accuracy = models.FloatField(null=True, blank=True)
+    reporter_type     = models.CharField(
+        max_length=20,
+        choices=[('victim', 'Victim'), ('bystander', 'Bystander')],
+        default='victim',
+        blank=True,
+    )
+
+    class Meta:
+        ordering = ['-incident_date', '-incident_time']
+
+        indexes = [
+        models.Index(fields=['location', 'incident_date']),
+        models.Index(fields=['severity_level', 'follow_up_status']),
+    ]
+
+    def __str__(self):
+        return f" [{self.id}] {self.incident_type} - {self.location} ({self.incident_date})]"
+    
+
 class PulseSession(models.Model):
     TIMEOUT_SECONDS = 15
 
@@ -184,3 +192,63 @@ class PulseSession(models.Model):
 
     def __str__(self):
         return f'PulseSession [{self.phone_hash[:8]}...] — {self.state}'
+
+
+class IncidentTimeline(models.Model):
+    """
+    Every action taken on an incident creates a timeline entry.
+    This is the living record of what happened and when.
+    """
+    COLOR_CHOICES = [
+        ('green',  'Green'),
+        ('orange', 'Orange'),
+        ('blue',   'Blue'),
+        ('purple', 'Purple'),
+        ('red',    'Red'),
+        ('grey',   'Grey'),
+    ]
+
+    incident    = models.ForeignKey(
+        Incident,
+        on_delete=models.CASCADE,
+        related_name='timeline_events'
+    )
+    title       = models.CharField(max_length=200)
+    description = models.TextField(blank=True, default='')
+    color       = models.CharField(max_length=10, choices=COLOR_CHOICES, default='green')
+    actor       = models.CharField(max_length=200, blank=True, default='System')
+    created_at  = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['created_at']
+
+    def __str__(self):
+        return f'[{self.incident.id}] {self.title} — {self.created_at}'
+
+
+class IncidentAssignment(models.Model):
+    """
+    Tracks who a coordinator assigned an incident to.
+    """
+    incident     = models.OneToOneField(
+        Incident,
+        on_delete=models.CASCADE,
+        related_name='assignment'
+    )
+    assigned_to  = models.ForeignKey(
+        'accounts.NGOUser',
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='assigned_incidents'
+    )
+    assigned_by  = models.ForeignKey(
+        'accounts.NGOUser',
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='coordinator_assignments'
+    )
+    assigned_at  = models.DateTimeField(auto_now_add=True)
+    notes        = models.TextField(blank=True, default='')
+
+    def __str__(self):
+        return f'Incident {self.incident.id} → {self.assigned_to}'

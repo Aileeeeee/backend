@@ -28,7 +28,7 @@ AT_USERNAME = config("AT_USERNAME", default="NOT_FOUND")
 AT_API_KEY = config("AT_API_KEY")
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY')
+SECRET_KEY = config('SECRET_KEY', default='django-insecure-safe-pulse-local-dev-key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
@@ -73,6 +73,11 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
+    "https://safe-pulse-psi.vercel.app",
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://safepulse-production-4e0d.up.railway.app",
 ]
 
 CORS_ALLOW_METHODS = [
@@ -112,16 +117,11 @@ TEMPLATES = [
 WSGI_APPLICATION = "safepulse_backend.wsgi.application"
 
 
-# Database
-# https://docs.djangoproject.com/en/6.0/ref/settings/#databases
-
-
-
 DATABASES = {
     "default": dj_database_url.config(
-        default=os.environ.get("DATABASE_URL"),
+        default=os.getenv("DATABASE_URL"),
         conn_max_age=600,
-        ssl_require=False, 
+        ssl_require=False,
     )
 }
 
